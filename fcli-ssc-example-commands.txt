@@ -1,0 +1,27 @@
+This is an overview of all used commands in the fcli ssc video: https://www.youtube.com/watch?v=sCMbU_s7hME
+fcli ssc session login --url http://localhost:8080/ -u admin -p <Password> 
+fcli ssc session logout -u admin -p QTT7BRh8PiZNyYsYXvVG
+ 
+export FCLI_DEFAULT_SSC_PASSWORD=<Password>
+fcli ssc session login --url http://localhost:8080 -u admin
+ 
+fcli ssc appversion list
+fcli ssc appversion list -q name=1.0
+ 
+fcli ssc appversion create pizzaApp:1.0 --auto-required-attrs --issue-template "Prioritized High Risk Issue Template"
+fcli ssc appversion create pizzaApp:1.0 --auto-required-attrs --issue-template "Prioritized High Risk Issue Template" --skip-if-exists
+ 
+fcli ssc appversion create pizzaApp:2.0 --auto-required-attrs --issue-template "Prioritized High Risk Issue Template" --store myPizza2
+fcli config variable contents list myPizza2 -o json
+fcli ssc appversion-artifact upload /home/janwienand/pizza-scan.fpr --appversion {?myPizza2:id} --store ?
+fcli ssc appversion-artifact wait-for ?
+ 
+fcli ssc appversion-vuln count --appversion {?myPizza2:id}
+fcli ssc appversion-vuln count --appversion {?myPizza2:id} -q id=Critical
+fcli ssc appversion-vuln count --appversion {?myPizza2:id} -q id=Critical -o expr={totalCount}
+ 
+fcli ssc appversion list -q application.name=pizzaApp -o yaml=id,application.name,name
+fcli ssc role list -o "csv=id,name,builtIn,allApplicationRole" --output-to-file /home/janwienand/mySscRoles.csv
+ 
+fcli ssc app delete pizzaApp --delete-versions
+fcli ssc session logout -u admin -p <Password>
